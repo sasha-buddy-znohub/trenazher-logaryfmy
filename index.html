@@ -89,10 +89,21 @@ h1{font-size:2.3rem;line-height:1.05;margin:6px 0 8px;font-weight:800;letter-spa
   min-height:140px;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:.3em;box-shadow:var(--shadow)}
 .task.ok{border-color:var(--ok);background:var(--ok-soft)}
 .task.bad{border-color:var(--bad);background:var(--bad-soft)}
-.answer{margin:12px 0;text-align:center;font-size:1.9rem;font-weight:800;min-height:54px;border-bottom:3px solid var(--primary);
+.answer{margin:12px 0;text-align:center;font-size:1.9rem;font-weight:800;min-height:70px;display:flex;align-items:center;justify-content:center;border-bottom:3px solid var(--primary);
   font-variant-numeric:tabular-nums;padding:4px}
 .answer.empty{color:var(--muted);font-weight:600;font-size:1rem;padding-top:16px}
-.pad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.pad{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.pad .zero{grid-column:span 3}
+.pad .fr{font-size:.62em}
+.pad .ft{font-size:1rem}
+.answer .fr{font-size:.72em}
+.answer .ph{opacity:.35}
+.hintex{background:var(--soft);border-radius:16px;padding:12px 14px;margin-top:12px;color:var(--ink);font-size:.95rem;line-height:1.5;font-weight:500}
+.hintex b{color:var(--primary)}
+.hintex sub,.hintex sup{font-size:.7em}
+.stop{display:block;margin:18px auto 0;background:none;border:none;color:var(--text);font-weight:700;text-decoration:underline;padding:8px}
+.opts button .fr{font-size:.7em}
+.card .fr{font-size:.8em}
 .pad button,.opts button{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:14px 0;font-size:1.3rem;font-weight:700;box-shadow:var(--shadow)}
 .pad button:active,.opts button:active{background:var(--soft)}
 .opts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
@@ -153,42 +164,42 @@ h1{font-size:2.3rem;line-height:1.05;margin:6px 0 8px;font-weight:800;letter-spa
   </div>
   <button class="mode" data-go="sprint">
     <div class="sample m">lg 0,01 = ?</div>
-    <h2>60 секунд</h2>
-    <p>Рахуй логарифми на швидкість і бий свій рекорд. Не виходить? Бери підказку, і залишиться три варіанти.</p>
+    <h2>Рахуй сам</h2>
+    <p>Рахуй логарифми у своєму темпі, а таймер просто покаже, скільки часу ти тренуєшся. Не виходить? Бери підказку з поясненням.</p>
   </button>
   <button class="mode" data-go="pairs">
     <div class="sample m">log<sub>2</sub>(<i>x</i> − 3) ↔ <i>x</i> &gt; 3</div>
     <h2>Знайди пару</h2>
-    <p>З’єднуй вираз із його значенням або з ОДЗ. Підказка залишить три можливі відповіді.</p>
+    <p>З’єднуй вираз із його значенням або з ОДЗ. Підказка пояснить, як думати, і залишить три можливі відповіді.</p>
   </button>
 </section>
 
 <section id="sprint" class="hidden">
   <div class="top"><button class="back" data-go="home">← Назад</button><span class="pts" id="pts1"></span></div>
   <div id="sIntro" class="panel">
-    <p>У тебе 60 секунд. Пиши відповідь і тисни OK.</p>
-    <p>Якщо вираз не йде, тисни «Підказка», і залишиться три варіанти. Правильна відповідь тоді дасть 1 бал замість 2.</p>
-    <p id="sBest" style="color:var(--muted);margin:0"></p>
+    <p>Часу ніхто не обмежує, таймер просто рахує, скільки ти тренуєшся. Пиши відповідь і тисни OK. Якщо відповідь виходить дробом, тисни кнопку з дробом.</p>
+    <p>Якщо вираз не йде, тисни «Підказка». З’явиться пояснення й три варіанти, а правильна відповідь тоді дасть 1 бал замість 2.</p>
     <button class="btn" id="sStart">Почати</button>
   </div>
   <div id="sGame" class="hidden">
-    <div class="clock" id="sClock">1:00</div>
-    <div class="timer"><div id="sTimer"></div></div>
+    <div class="clock" id="sClock">⏱ 0:00</div>
     <div class="task m" id="sTask"></div>
     <div id="sInput">
       <div class="answer empty" id="sAns">твоя відповідь</div>
       <div class="pad" id="pad">
-        <button>7</button><button>8</button><button>9</button>
-        <button>4</button><button>5</button><button>6</button>
-        <button>1</button><button>2</button><button>3</button>
-        <button aria-label="мінус" data-k="−">+/−</button><button>0</button><button aria-label="стерти">⌫</button>
+        <button>7</button><button>8</button><button>9</button><button aria-label="стерти" data-k="⌫">⌫</button>
+        <button>4</button><button>5</button><button>6</button><button aria-label="кома" data-k=",">,</button>
+        <button>1</button><button>2</button><button>3</button><button aria-label="дріб" data-k="/"><span class="fr"><span>a</span><span>b</span></span></button>
+        <button aria-label="мінус" data-k="−">+/−</button><button class="zero">0</button>
       </div>
       <div class="acts"><button class="btn ghost" id="sHint">Підказка</button><button class="btn" id="sOk">OK</button></div>
     </div>
     <div id="sChoice" class="hidden">
       <div class="opts-note">Обери одну з трьох</div>
       <div class="opts" id="sOpts"></div>
+      <div class="hintex" id="sHintEx"></div>
     </div>
+    <button class="stop" id="sStop">Завершити й подивитися результат</button>
   </div>
   <div id="sEnd" class="panel hidden">
     <div style="font-weight:700;color:var(--text)">Правильних відповідей</div>
@@ -211,6 +222,7 @@ h1{font-size:2.3rem;line-height:1.05;margin:6px 0 8px;font-weight:800;letter-spa
   <div id="pBoard">
     <div class="clock" id="pClock">⏱ 0:00</div>
     <button class="hintbtn" id="pHint">Підказка</button>
+    <div class="hintex hidden" id="pHintEx" style="margin:-4px 0 14px"></div>
     <div class="cols">
       <div id="pLeft"><h3>Вираз</h3></div>
       <div id="pRight"><h3>Відповідь</h3></div>
@@ -250,6 +262,10 @@ h1{font-size:2.3rem;line-height:1.05;margin:6px 0 8px;font-weight:800;letter-spa
   function minus(n){ return n<0 ? "−"+(-n) : String(n); }
   function lg(b){ return b===10 ? "lg " : "log<sub>"+b+"</sub> "; }
   function frac(a,b){ return '<span class="fr"><span>'+a+'</span><span>'+b+'</span></span>'; }
+  function gcd(a,b){ a=Math.abs(a); b=Math.abs(b); while(b){ var t=b; b=a%b; a=t; } return a||1; }
+  function R(n,d){ d=d||1; if(d<0){ n=-n; d=-d; } var g=gcd(n,d); return {n:n/g, d:d/g}; }
+  function eq(a,b){ return a.n*b.d===b.n*a.d; }
+  function fH(r){ return r.d===1 ? minus(r.n) : (r.n<0?"−":"")+frac(Math.abs(r.n), r.d); }
 
   /* ---------- points ---------- */
   var points = parseInt(get("logPoints")||"0",10)||0;
@@ -310,25 +326,61 @@ h1{font-size:2.3rem;line-height:1.05;margin:6px 0 8px;font-weight:800;letter-spa
     if(k>=0) arg = String(Math.pow(b,k));
     else if(b===10) arg = "0," + "0".repeat(-k-1) + "1";
     else arg = frac(1, Math.pow(b,-k));
-    return {html: lg(b)+arg, ans:k, ex:"Бо "+b+"<sup>"+minus(k)+"</sup> = "+arg};
+    var h = (b===10 ? "lg означає логарифм з основою 10. Подумай, в який степінь треба піднести 10, щоб отримати "+arg+"."
+      : "Логарифм відповідає на питання, в який степінь треба піднести основу "+b+", щоб отримати "+arg+".")
+      + (k<0 ? " Число менше за 1, тож показник буде від’ємним." : k===0 ? " Згадай, чому дорівнює будь-яке число в нульовому степені." : "");
+    return {html: lg(b)+arg, ans:R(k), ex:"Бо "+b+"<sup>"+minus(k)+"</sup> = "+arg, hint:h};
   }
+  var EQ = function(a,b,x,y){ return a+" = "+b+", а "+x+" = "+y+". Прирівняй показники степенів і знайди x."; };
+  var ROOT2 = "Згадай, як записати квадратний корінь у вигляді степеня, √a = a<sup>?</sup>.";
+  var FR = [
+    [4,"2",1,2,"Бо 4<sup>1/2</sup> = √4 = 2",EQ("4","2<sup>2</sup>","2","2<sup>1</sup>")+" Тобто 2<sup>2x</sup> = 2<sup>1</sup>."],
+    [9,"3",1,2,"Бо 9<sup>1/2</sup> = √9 = 3",EQ("9","3<sup>2</sup>","3","3<sup>1</sup>")+" Тобто 3<sup>2x</sup> = 3<sup>1</sup>."],
+    [25,"5",1,2,"Бо 25<sup>1/2</sup> = √25 = 5",EQ("25","5<sup>2</sup>","5","5<sup>1</sup>")+" Тобто 5<sup>2x</sup> = 5<sup>1</sup>."],
+    [8,"2",1,3,"Бо 8<sup>1/3</sup> = ∛8 = 2",EQ("8","2<sup>3</sup>","2","2<sup>1</sup>")+" Тобто 2<sup>3x</sup> = 2<sup>1</sup>."],
+    [27,"3",1,3,"Бо 27<sup>1/3</sup> = ∛27 = 3",EQ("27","3<sup>3</sup>","3","3<sup>1</sup>")+" Тобто 3<sup>3x</sup> = 3<sup>1</sup>."],
+    [16,"2",1,4,"Бо 2<sup>4</sup> = 16, тому 16<sup>1/4</sup> = 2",EQ("16","2<sup>4</sup>","2","2<sup>1</sup>")+" Тобто 2<sup>4x</sup> = 2<sup>1</sup>."],
+    [4,"8",3,2,"Бо 4<sup>3/2</sup> = (√4)<sup>3</sup> = 2<sup>3</sup> = 8",EQ("4","2<sup>2</sup>","8","2<sup>3</sup>")+" Тобто 2<sup>2x</sup> = 2<sup>3</sup>."],
+    [9,"27",3,2,"Бо 9<sup>3/2</sup> = (√9)<sup>3</sup> = 3<sup>3</sup> = 27",EQ("9","3<sup>2</sup>","27","3<sup>3</sup>")+" Тобто 3<sup>2x</sup> = 3<sup>3</sup>."],
+    [8,"4",2,3,"Бо 8<sup>2/3</sup> = (∛8)<sup>2</sup> = 2<sup>2</sup> = 4",EQ("8","2<sup>3</sup>","4","2<sup>2</sup>")+" Тобто 2<sup>3x</sup> = 2<sup>2</sup>."],
+    [16,"8",3,4,"Бо 16<sup>3/4</sup> = 2<sup>3</sup> = 8",EQ("16","2<sup>4</sup>","8","2<sup>3</sup>")+" Тобто 2<sup>4x</sup> = 2<sup>3</sup>."],
+    [8,"16",4,3,"Бо 8<sup>4/3</sup> = 2<sup>4</sup> = 16",EQ("8","2<sup>3</sup>","16","2<sup>4</sup>")+" Тобто 2<sup>3x</sup> = 2<sup>4</sup>."],
+    [27,"9",2,3,"Бо 27<sup>2/3</sup> = 3<sup>2</sup> = 9",EQ("27","3<sup>3</sup>","9","3<sup>2</sup>")+" Тобто 3<sup>3x</sup> = 3<sup>2</sup>."],
+    [4,frac(1,2),-1,2,"Бо 4<sup>−1/2</sup> = 1/√4 = 1/2",EQ("4","2<sup>2</sup>","1/2","2<sup>−1</sup>")+" Тобто 2<sup>2x</sup> = 2<sup>−1</sup>."],
+    [9,frac(1,3),-1,2,"Бо 9<sup>−1/2</sup> = 1/√9 = 1/3",EQ("9","3<sup>2</sup>","1/3","3<sup>−1</sup>")+" Тобто 3<sup>2x</sup> = 3<sup>−1</sup>."],
+    [8,frac(1,2),-1,3,"Бо 8<sup>−1/3</sup> = 1/∛8 = 1/2",EQ("8","2<sup>3</sup>","1/2","2<sup>−1</sup>")+" Тобто 2<sup>3x</sup> = 2<sup>−1</sup>."],
+    [10,"√10",1,2,"Бо √10 = 10<sup>1/2</sup>",ROOT2],
+    [2,"√2",1,2,"Бо √2 = 2<sup>1/2</sup>",ROOT2],
+    [3,"√3",1,2,"Бо √3 = 3<sup>1/2</sup>",ROOT2],
+    [5,"√5",1,2,"Бо √5 = 5<sup>1/2</sup>",ROOT2],
+    [2,"∛2",1,3,"Бо ∛2 = 2<sup>1/3</sup>","Згадай, як записати корінь третього степеня у вигляді степеня, ∛a = a<sup>?</sup>."],
+    [2,"2√2",3,2,"Бо 2√2 = 2<sup>1</sup> · 2<sup>1/2</sup> = 2<sup>3/2</sup>","Запиши 2√2 як степінь двійки. √2 = 2<sup>1/2</sup>, а коли множиш степені з однаковою основою, показники додаються."],
+    [3,"3√3",3,2,"Бо 3√3 = 3<sup>1</sup> · 3<sup>1/2</sup> = 3<sup>3/2</sup>","Запиши 3√3 як степінь трійки. √3 = 3<sup>1/2</sup>, а коли множиш степені з однаковою основою, показники додаються."],
+    ["1/2","4",-2,1,"Бо (1/2)<sup>−2</sup> = 2<sup>2</sup> = 4",EQ("1/2","2<sup>−1</sup>","4","2<sup>2</sup>")+" Тобто 2<sup>−x</sup> = 2<sup>2</sup>."],
+    ["1/2","8",-3,1,"Бо (1/2)<sup>−3</sup> = 2<sup>3</sup> = 8",EQ("1/2","2<sup>−1</sup>","8","2<sup>3</sup>")+" Тобто 2<sup>−x</sup> = 2<sup>3</sup>."],
+    ["1/3","9",-2,1,"Бо (1/3)<sup>−2</sup> = 3<sup>2</sup> = 9",EQ("1/3","3<sup>−1</sup>","9","3<sup>2</sup>")+" Тобто 3<sup>−x</sup> = 3<sup>2</sup>."]
+  ];
+  function fracTask(){ var f=pick(FR); return {html: lg(f[0])+f[1], ans:R(f[2],f[3]), ex:f[4], hint:f[5]}; }
   var SUMS = [[6,2,3,1],[6,4,9,2],[10,4,25,2],[10,2,5,1],[10,20,5,2],[10,50,2,2],[12,3,4,1],[15,3,5,1],[2,4,8,5],[3,3,27,4],[2,2,16,5],[10,200,5,3]];
   function prop(){
     var t = rnd(0,3);
-    if(t===0){ var s = pick(SUMS); return {html: lg(s[0])+s[1]+" + "+lg(s[0])+s[2], ans:s[3], ex:"Сума логарифмів дорівнює логарифму добутку, тобто "+lg(s[0])+(s[1]*s[2])+" = "+s[3]}; }
+    if(t===0){ var s = pick(SUMS); return {html: lg(s[0])+s[1]+" + "+lg(s[0])+s[2], ans:R(s[3]), ex:"Сума логарифмів дорівнює логарифму добутку, тобто "+lg(s[0])+(s[1]*s[2])+" = "+s[3], hint:"Сума логарифмів з однаковою основою дорівнює логарифму добутку. Перемнож "+s[1]+" і "+s[2]+", а потім подумай, в який степінь треба піднести "+s[0]+", щоб отримати результат."}; }
     if(t===1){
       var b = pick([2,3,5]), m = pick([3,5,7].filter(function(x){return x!==b;})), k = rnd(1,3);
       if(Math.pow(b,k)*m>250) k=1;
-      return {html: lg(b)+(Math.pow(b,k)*m)+" − "+lg(b)+m, ans:k, ex:"Різниця логарифмів дорівнює логарифму частки, тобто "+lg(b)+Math.pow(b,k)+" = "+k};
+      return {html: lg(b)+(Math.pow(b,k)*m)+" − "+lg(b)+m, ans:R(k), ex:"Різниця логарифмів дорівнює логарифму частки, тобто "+lg(b)+Math.pow(b,k)+" = "+k, hint:"Різниця логарифмів з однаковою основою дорівнює логарифму частки. Поділи "+(Math.pow(b,k)*m)+" на "+m+", а потім подумай, в який степінь треба піднести "+b+", щоб отримати результат."};
     }
-    if(t===2){ var b2 = pick([2,3,5,7]), n = rnd(2,12); return {html: b2+"<sup>log<sub>"+b2+"</sub> "+n+"</sup>", ans:n, ex:"Основна логарифмічна тотожність, a<sup>log<sub>a</sub> b</sup> = b"}; }
+    if(t===2){ var b2 = pick([2,3,5,7]), n = rnd(2,12); return {html: b2+"<sup>log<sub>"+b2+"</sub> "+n+"</sup>", ans:R(n), ex:"Основна логарифмічна тотожність, a<sup>log<sub>a</sub> b</sup> = b", hint:"Тут працює основна логарифмічна тотожність. Число в степені логарифма з такою самою основою дає те, що стоїть під логарифмом."}; }
     var b3 = pick([2,3,10]), j = rnd(1,3), c = rnd(2,3);
-    return {html: c+" · "+lg(b3)+Math.pow(b3,j), ans:c*j, ex:lg(b3)+Math.pow(b3,j)+" = "+j+", тому "+c+" · "+j+" = "+(c*j)};
+    return {html: c+" · "+lg(b3)+Math.pow(b3,j), ans:R(c*j), ex:lg(b3)+Math.pow(b3,j)+" = "+j+", тому "+c+" · "+j+" = "+(c*j), hint:"Спочатку порахуй сам логарифм "+lg(b3)+Math.pow(b3,j)+", тобто в який степінь треба піднести "+b3+", щоб отримати "+Math.pow(b3,j)+". Потім помнож результат на "+c+"."};
   }
-  function task(){ return Math.random()<0.7 ? basic() : prop(); }
+  function task(){ var r=Math.random(); return r<0.5 ? basic() : r<0.75 ? fracTask() : prop(); }
   function distractors(a){
-    var c = shuffle([a+1,a-1,-a,a+2,a-2,a*2].filter(function(x,i,arr){ return x!==a && arr.indexOf(x)===i; }));
-    return c.slice(0,2);
+    var c=[R(-a.n,a.d),R(a.n+a.d,a.d),R(a.n-a.d,a.d),R(2*a.n,a.d),R(a.n+2*a.d,a.d)];
+    if(a.n!==0 && a.d!==1) c.unshift(R(a.d,a.n));
+    var out=[];
+    shuffle(c).forEach(function(x){ if(!eq(x,a) && !out.some(function(y){return eq(x,y);})) out.push(x); });
+    return out.slice(0,2);
   }
 
   var ODZ = [
@@ -348,6 +400,11 @@ h1{font-size:2.3rem;line-height:1.05;margin:6px 0 8px;font-weight:800;letter-spa
       : "Вираз під кожним логарифмом має бути більшим за 0.";
     return p[0]+", ОДЗ "+odzHtml(p[1])+". "+rule;
   }
+  function odzHint(p){
+    if(p[1]==="будь-яке x") return "Під логарифмом має бути додатне число. Подумай, чи може цей вираз бути нулем або від’ємним.";
+    if(p[0].indexOf("<sub><i>x")>=0) return "Тут x стоїть в основі. Основа логарифма має бути додатною і не дорівнювати 1, тож запиши обидві умови.";
+    return "Під кожним логарифмом має бути додатне число. Запиши, що вираз під логарифмом більший за 0, і розв’яжи нерівність.";
+  }
 
   /* ---------- navigation ---------- */
   function show(id){
@@ -361,12 +418,10 @@ h1{font-size:2.3rem;line-height:1.05;margin:6px 0 8px;font-weight:800;letter-spa
   }
   document.querySelectorAll("[data-go]").forEach(function(b){ b.addEventListener("click", function(){ show(b.dataset.go); }); });
 
-  /* ---------- 60 seconds ---------- */
-  var cur, input="", score=0, earned=0, wrongs=[], tick=null, endAt=0, last="", locked=false, hinted=false;
-  function best(){ return parseInt(get("logBest")||"0",10)||0; }
+  /* ---------- practice ---------- */
+  var cur, input="", score=0, earned=0, wrongs=[], tick=null, sec=0, last="", locked=false, hinted=false;
   function sIntro(){
     $("sIntro").classList.remove("hidden"); $("sGame").classList.add("hidden"); $("sEnd").classList.add("hidden");
-    $("sBest").textContent = best() ? "Твій рекорд "+best() : "";
   }
   function mode(choice){ $("sInput").classList.toggle("hidden", choice); $("sChoice").classList.toggle("hidden", !choice); }
   function next(){
@@ -378,65 +433,86 @@ h1{font-size:2.3rem;line-height:1.05;margin:6px 0 8px;font-weight:800;letter-spa
   }
   function draw(){
     var a=$("sAns");
-    if(input===""){ a.textContent="твоя відповідь"; a.classList.add("empty"); }
-    else { a.textContent=input; a.classList.remove("empty"); }
+    if(input===""){ a.textContent="твоя відповідь"; a.classList.add("empty"); return; }
+    a.classList.remove("empty");
+    if(input.indexOf("/")>=0){
+      var neg=input.charAt(0)==="−", p=input.replace("−","").split("/");
+      a.innerHTML=(neg?"−":"")+frac(p[0], p[1]||'<span class="ph">□</span>');
+    } else a.textContent=input;
   }
   function press(k){
     if(locked || hinted) return;
+    var body=input.replace("−","");
     if(k==="⌫") input=input.slice(0,-1);
     else if(k==="−"||k==="-") input = input.charAt(0)==="−" ? input.slice(1) : "−"+input;
-    else if(/^[0-9]$/.test(k) && input.replace("−","").length<4) input+=k;
+    else if(k==="/"){ if(body && /[0-9]$/.test(body) && body.indexOf("/")<0 && body.indexOf(",")<0) input+="/"; }
+    else if(k===","||k==="."){ if(body && /[0-9]$/.test(body) && body.indexOf("/")<0 && body.indexOf(",")<0) input+=","; }
+    else if(/^[0-9]$/.test(k) && body.length<7) input+=k;
     draw();
+  }
+  function parseIn(str){
+    var neg=str.charAt(0)==="−", t=str.replace("−",""), sg=neg?-1:1;
+    if(t.indexOf("/")>=0){
+      var p=t.split("/");
+      if(!/^[0-9]+$/.test(p[0]) || !/^[0-9]+$/.test(p[1]) || +p[1]===0) return null;
+      return R(sg*parseInt(p[0],10), parseInt(p[1],10));
+    }
+    if(!/^[0-9]+(,[0-9]+)?$/.test(t)) return null;
+    var q=t.split(","), dec=q[1]||"";
+    return R(sg*parseInt(q[0]+dec,10), Math.pow(10,dec.length));
   }
   function check(v){
     if(locked) return;
     locked=true;
-    var ok = v===cur.ans;
+    var ok = eq(v,cur.ans);
     if(ok){ score++; var p = hinted?1:2; earned+=p; add(p); $("sTask").classList.add("ok"); }
-    else { wrongs.push({html:cur.html, ans:cur.ans, got:v, ex:cur.ex}); $("sTask").innerHTML = cur.html+" = "+minus(cur.ans); $("sTask").classList.add("bad"); }
-    setTimeout(function(){ locked=false; if(tick) next(); }, ok?300:1100);
+    else { wrongs.push({html:cur.html, ans:cur.ans, got:v, ex:cur.ex}); $("sTask").innerHTML = cur.html+" = "+fH(cur.ans); $("sTask").classList.add("bad"); }
+    setTimeout(function(){ locked=false; if(tick) next(); }, ok?400:(hinted?2200:1400));
   }
-  function submit(){ if(hinted || input==="" || input==="−") return; check(parseInt(input.replace("−","-"),10)); }
+  function submit(){
+    if(hinted || input==="") return;
+    var v=parseIn(input);
+    if(!v){ var a=$("sAns"); a.classList.remove("wrong"); void a.offsetWidth; return; }
+    check(v);
+  }
   function hint(){
     if(locked || hinted) return;
     hinted=true;
     var opts = shuffle([cur.ans].concat(distractors(cur.ans))), box=$("sOpts");
     box.innerHTML="";
     opts.forEach(function(o){
-      var b=document.createElement("button"); b.className="m"; b.textContent=minus(o);
+      var b=document.createElement("button"); b.className="m"; b.innerHTML=fH(o);
       b.addEventListener("click", function(){ check(o); });
       box.appendChild(b);
     });
+    $("sHintEx").innerHTML = "<b>Як думати.</b> "+cur.hint;
     mode(true);
   }
   function startSprint(){
-    score=0; earned=0; wrongs=[]; last="";
+    score=0; earned=0; wrongs=[]; last=""; sec=0;
     $("sIntro").classList.add("hidden"); $("sEnd").classList.add("hidden"); $("sGame").classList.remove("hidden");
-    endAt = Date.now()+60000; $("sTimer").style.width="100%"; $("sClock").textContent="1:00";
+    $("sClock").textContent="⏱ 0:00";
     next();
+    if(tick) clearInterval(tick);
     tick = setInterval(function(){
-      var left = Math.max(0,endAt-Date.now());
-      $("sTimer").style.width = (left/600)+"%";
-      $("sClock").textContent = fmt(Math.ceil(left/1000));
-      if(left<=0) finish();
-    },200);
+      if(document.hidden) return;
+      sec++; $("sClock").textContent = "⏱ "+fmt(sec);
+    },1000);
   }
   function stopSprint(){ if(tick){ clearInterval(tick); tick=null; } locked=false; }
   function finish(){
     stopSprint();
     $("sGame").classList.add("hidden"); $("sEnd").classList.remove("hidden");
     $("sScore").textContent=score;
-    var b=best();
-    if(score>b){ set("logBest",String(score)); $("sRec").textContent = b ? "Новий рекорд! Попередній був "+b : "Перший рекорд записано"; }
-    else $("sRec").textContent = "Рекорд "+b;
+    $("sRec").textContent = "за "+fmt(sec);
     $("sGot").textContent = earned ? "+"+earned+" до твоїх балів" : "";
     var m=$("sMist"); m.innerHTML="";
-    if(!wrongs.length){ m.innerHTML='<div style="justify-content:center;color:var(--ok);font-weight:700">Жодної помилки 🤍</div>'; }
+    if(!wrongs.length){ if(score) m.innerHTML='<div style="justify-content:center;color:var(--ok);font-weight:700">Жодної помилки 🤍</div>'; }
     else {
       var h=document.createElement("div"); h.style.cssText="color:var(--muted);font-weight:700"; h.textContent="Варто глянути ще раз"; m.appendChild(h);
       wrongs.forEach(function(w){
         var d=document.createElement("div");
-        d.innerHTML='<span class="m">'+w.html+'</span><span><span class="w">'+minus(w.got)+'</span><span class="r">'+minus(w.ans)+'</span></span>';
+        d.innerHTML='<span class="m">'+w.html+'</span><span class="m"><span class="w">'+fH(w.got)+'</span><span class="r">'+fH(w.ans)+'</span></span>';
         m.appendChild(d);
         if(w.ex){ var e=document.createElement("div"); e.className="ex"; e.innerHTML=w.ex; m.appendChild(e); }
       });
@@ -445,6 +521,7 @@ h1{font-size:2.3rem;line-height:1.05;margin:6px 0 8px;font-weight:800;letter-spa
   }
   $("sStart").addEventListener("click", startSprint);
   $("sAgain").addEventListener("click", startSprint);
+  $("sStop").addEventListener("click", finish);
   $("sOk").addEventListener("click", submit);
   $("sHint").addEventListener("click", hint);
   $("pad").querySelectorAll("button").forEach(function(b){ b.addEventListener("click", function(){ press(b.dataset.k || b.textContent.trim()); }); });
@@ -452,11 +529,11 @@ h1{font-size:2.3rem;line-height:1.05;margin:6px 0 8px;font-weight:800;letter-spa
     if($("sGame").classList.contains("hidden") || hinted) return;
     if(e.key==="Enter"){ e.preventDefault(); submit(); }
     else if(e.key==="Backspace"){ e.preventDefault(); press("⌫"); }
-    else if(e.key==="-"||/^[0-9]$/.test(e.key)) press(e.key);
+    else if(e.key==="-"||e.key==="/"||e.key===","||e.key==="."||/^[0-9]$/.test(e.key)) press(e.key);
   });
 
   /* ---------- pairs ---------- */
-  var kind="mix", selL=null, selR=null, matched=0, total=0, misses=0, hints=0, t0=0, pTick=null, hintKey=null, exMap={}, pMistList=[];
+  var kind="mix", selL=null, selR=null, matched=0, total=0, misses=0, hints=0, t0=0, pTick=null, hintKey=null, exMap={}, hintMap={}, pMistList=[];
   var NOTES = {
     mix:"Частина пар про значення, частина про ОДЗ. Обери вираз, а потім відповідь до нього.",
     val:"З’єднай кожен логарифм з його значенням.",
@@ -472,19 +549,19 @@ h1{font-size:2.3rem;line-height:1.05;margin:6px 0 8px;font-weight:800;letter-spa
   function buildPairs(){
     var nOdz = kind==="mix"?3 : kind==="odz"?6 : 0, out=[], used={};
     shuffle(ODZ.slice()).forEach(function(p){
-      if(out.length<nOdz && !used[p[1]]){ used[p[1]]=1; out.push({l:p[0], r:odzHtml(p[1]), key:p[1], ex:odzEx(p)}); }
+      if(out.length<nOdz && !used[p[1]]){ used[p[1]]=1; out.push({l:p[0], r:odzHtml(p[1]), key:p[1], ex:odzEx(p), hint:odzHint(p)}); }
     });
     var guard=0;
     while(out.length<6 && guard++<500){
-      var t = Math.random()<0.75 ? basic() : prop(), key="v"+t.ans;
-      if(!used[key]){ used[key]=1; out.push({l:t.html, r:minus(t.ans), key:key, ex:t.html+" = "+minus(t.ans)+". "+t.ex}); }
+      var rr=Math.random(), t = rr<0.55 ? basic() : rr<0.8 ? fracTask() : prop(), key="v"+t.ans.n+"_"+t.ans.d;
+      if(!used[key]){ used[key]=1; out.push({l:t.html, r:fH(t.ans), key:key, ex:t.html+" = "+fH(t.ans)+". "+t.ex, hint:t.hint}); }
     }
     return out;
   }
   function newRound(){
     selL=selR=null; matched=0; misses=0; hints=0; hintKey=null;
     var pairs = buildPairs(); total=pairs.length;
-    exMap={}; pMistList=[]; pairs.forEach(function(p){ exMap[p.key]=p.ex; }); $("pMist").innerHTML="";
+    exMap={}; hintMap={}; pMistList=[]; pairs.forEach(function(p){ exMap[p.key]=p.ex; hintMap[p.key]=p.hint; }); $("pHintEx").classList.add("hidden"); $("pMist").innerHTML="";
     $("pNote").textContent = NOTES[kind];
     $("pWin").classList.add("hidden"); $("pBoard").classList.remove("hidden");
     var L=$("pLeft"), R=$("pRight");
@@ -507,7 +584,7 @@ h1{font-size:2.3rem;line-height:1.05;margin:6px 0 8px;font-weight:800;letter-spa
     $("pHint").disabled = !!hintKey || matched===total;
     $("pHint").textContent = hintKey ? "Підказка активна, обери з трьох" : "Підказка";
   }
-  function clearDim(){ document.querySelectorAll("#pRight .card.dim").forEach(function(c){ c.classList.remove("dim"); c.disabled=false; }); hintKey=null; hintState(); }
+  function clearDim(){ document.querySelectorAll("#pRight .card.dim").forEach(function(c){ c.classList.remove("dim"); c.disabled=false; }); hintKey=null; $("pHintEx").classList.add("hidden"); hintState(); }
   function pHint(){
     if(hintKey) return;
     if(!selL){
@@ -519,6 +596,8 @@ h1{font-size:2.3rem;line-height:1.05;margin:6px 0 8px;font-weight:800;letter-spa
     var right = Array.prototype.slice.call($("pRight").querySelectorAll(".card:not(.done)"));
     var keep = shuffle(right.filter(function(c){ return c.dataset.key!==hintKey; })).slice(0,2);
     right.forEach(function(c){ if(c.dataset.key!==hintKey && keep.indexOf(c)<0){ c.classList.add("dim"); c.disabled=true; } });
+    $("pHintEx").innerHTML = '<b>Як думати.</b> <span class="m">'+selL.innerHTML+'</span>. '+hintMap[hintKey];
+    $("pHintEx").classList.remove("hidden");
     hintState();
   }
   $("pHint").addEventListener("click", pHint);
