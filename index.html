@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Тренажер з логарифмів</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&family=Noto+Serif:ital,wght@0,500;1,500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F8F9FA; --card:#FFFFFF; --ink:#0B1020; --text:#5E6A7D; --muted:#8A94A6; --border:#EDEFF3;
+  --primary:#0C01FF; --on-primary:#FFFFFF; --soft:rgba(12,1,255,.08); --sky:#0583F2;
+  --ok:#109338; --ok-soft:#E3F7EA; --bad:#F25A45; --bad-soft:#FDECE9; --gold:#FD8D00;
+  --shadow:0 2px 4px rgba(11,16,32,.04);
+  color-scheme:light; box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0B1020; --card:#151B33; --ink:#EEF0F8; --text:#B4BCD0; --muted:#7F89A3; --border:#252D4D;
+    --primary:#7A73FF; --on-primary:#0B1020; --soft:rgba(122,115,255,.16); --sky:#4FB0FF;
+    --ok:#3FD27A; --ok-soft:#0F3322; --bad:#FF7F6B; --bad-soft:#3D1A17; --gold:#FFAA3B;
+    --shadow:none; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0B1020; --card:#151B33; --ink:#EEF0F8; --text:#B4BCD0; --muted:#7F89A3; --border:#252D4D;
+  --primary:#7A73FF; --on-primary:#0B1020; --soft:rgba(122,115,255,.16); --sky:#4FB0FF;
+  --ok:#3FD27A; --ok-soft:#0F3322; --bad:#FF7F6B; --bad-soft:#3D1A17; --gold:#FFAA3B;
+  --shadow:none; color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);
+  font-family:"Montserrat","Nexa Text",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:560px;margin:0 auto;padding:16px 16px 32px}
+.m{font-family:"Noto Serif",Georgia,"Times New Roman",serif;font-weight:500}
+.m sub,.m sup{font-size:.62em}
+.fr{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;font-size:.8em;line-height:1.05;margin:0 .1em}
+.fr span:first-child{border-bottom:1.5px solid currentColor;padding:0 .15em}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible{outline:3px solid var(--sky);outline-offset:2px}
+button:disabled{cursor:default}
+.hidden{display:none!important}
+.clock{text-align:center;font-weight:800;font-variant-numeric:tabular-nums;color:var(--primary);font-size:1.25rem;margin-bottom:8px}
+.goal .spent{margin-top:6px;font-weight:700;opacity:1}
+
+.top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px;min-height:44px}
+.back{background:none;border:none;color:var(--text);font-weight:600;padding:10px 0}
+.pts{display:inline-flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--border);border-radius:100px;
+  padding:8px 14px;font-weight:800;font-variant-numeric:tabular-nums;box-shadow:var(--shadow);position:relative}
+.pts .s{color:var(--gold)}
+.pts small{color:var(--muted);font-weight:600}
+.float{position:absolute;right:8px;top:-6px;color:var(--ok);font-weight:800;pointer-events:none;animation:up .8s forwards}
+@keyframes up{to{transform:translateY(-22px);opacity:0}}
+
+h1{font-size:2.3rem;line-height:1.05;margin:6px 0 8px;font-weight:800;letter-spacing:-.02em}
+.lead{color:var(--text);margin:0 0 20px;line-height:1.5;font-weight:500}
+
+.goal{background:var(--primary);color:var(--on-primary);border-radius:24px;padding:20px;margin-bottom:16px}
+.goal .row{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.goal .num{font-size:2.4rem;font-weight:800;font-variant-numeric:tabular-nums;line-height:1}
+.goal .num small{font-size:1rem;opacity:.75;font-weight:700}
+.goal p{margin:12px 0 0;line-height:1.45;font-weight:500;opacity:.92;font-size:.95rem}
+.track{height:10px;border-radius:100px;background:rgba(255,255,255,.25);overflow:hidden;margin-top:14px}
+.track div{height:100%;border-radius:100px;background:currentColor;transition:width .4s}
+.code{display:inline-block;margin-top:10px;background:rgba(255,255,255,.18);border-radius:12px;padding:6px 12px;font-weight:800;letter-spacing:.06em}
+
+.mode{display:block;width:100%;text-align:left;background:var(--card);border:1px solid var(--border);border-radius:24px;
+  padding:20px;margin-bottom:12px;box-shadow:var(--shadow);transition:border-color .15s}
+.mode:hover{border-color:var(--primary)}
+.mode .sample{font-size:1.5rem;color:var(--primary);margin-bottom:10px}
+.mode h2{margin:0 0 4px;font-size:1.2rem;font-weight:800}
+.mode p{margin:0;color:var(--text);font-size:.92rem;line-height:1.45;font-weight:500}
+.rules{color:var(--muted);font-size:.85rem;line-height:1.5;margin:6px 4px 0;font-weight:500}
+
+.panel{background:var(--card);border:1px solid var(--border);border-radius:24px;padding:20px;box-shadow:var(--shadow);line-height:1.5}
+.panel p{margin:0 0 8px;color:var(--text);font-weight:500}
+.btn{display:block;width:100%;border:none;border-radius:100px;padding:15px;font-weight:800;font-size:1.05rem;margin-top:14px;
+  background:var(--primary);color:var(--on-primary)}
+.btn.ghost{background:var(--soft);color:var(--primary)}
+.btn:disabled{opacity:.4}
+.big{font-size:3.4rem;font-weight:800;color:var(--primary);line-height:1;margin:6px 0}
+
+.timer{height:8px;background:var(--soft);border-radius:100px;overflow:hidden;margin-bottom:16px}
+.timer div{height:100%;background:var(--primary);width:100%;transition:width .25s linear;border-radius:100px}
+.task{background:var(--card);border:2px solid var(--border);border-radius:24px;padding:30px 14px;text-align:center;font-size:2.3rem;
+  min-height:140px;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:.3em;box-shadow:var(--shadow)}
+.task.ok{border-color:var(--ok);background:var(--ok-soft)}
+.task.bad{border-color:var(--bad);background:var(--bad-soft)}
+.answer{margin:12px 0;text-align:center;font-size:1.9rem;font-weight:800;min-height:54px;border-bottom:3px solid var(--primary);
+  font-variant-numeric:tabular-nums;padding:4px}
+.answer.empty{color:var(--muted);font-weight:600;font-size:1rem;padding-top:16px}
+.pad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.pad button,.opts button{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:14px 0;font-size:1.3rem;font-weight:700;box-shadow:var(--shadow)}
+.pad button:active,.opts button:active{background:var(--soft)}
+.opts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
+.opts button{font-size:1.7rem;padding:22px 0;border-width:2px}
+.opts-note{text-align:center;color:var(--muted);font-weight:600;font-size:.9rem;margin-top:14px}
+.acts{display:flex;gap:10px}
+.acts .btn{flex:1}
+.mist{margin-top:14px;border-top:1px solid var(--border);padding-top:10px}
+.mist div{display:flex;justify-content:space-between;gap:12px;padding:6px 0;align-items:center}
+.mist .m{font-size:1.1rem}
+.mist .r{color:var(--ok);font-weight:800}
+.mist .w{color:var(--bad);text-decoration:line-through;margin-right:8px;font-weight:700}
+.mist div.ex{display:block;color:var(--text);font-size:.88rem;font-weight:500;line-height:1.45;padding:0 0 10px}
+.mist div.ex sub,.mist div.ex sup{font-size:.7em}
+.pts .tm{font-weight:700}
+
+.seg{display:flex;background:var(--card);border:1px solid var(--border);border-radius:100px;padding:4px;margin-bottom:12px}
+.seg button{flex:1;border:none;background:none;padding:9px 4px;border-radius:100px;font-weight:700;color:var(--text);font-size:.92rem}
+.seg button[aria-pressed="true"]{background:var(--primary);color:var(--on-primary)}
+.note{color:var(--text);font-size:.88rem;line-height:1.45;margin:2px 4px 12px;font-weight:500}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.cols h3{margin:0 0 6px 4px;font-size:.82rem;color:var(--muted);font-weight:700}
+.card{display:flex;align-items:center;justify-content:center;width:100%;min-height:66px;margin-bottom:10px;background:var(--card);
+  border:2px solid var(--border);border-radius:18px;padding:10px 6px;font-size:1.15rem;text-align:center;box-shadow:var(--shadow);
+  transition:opacity .25s,border-color .15s,background .15s}
+.card.sel{border-color:var(--primary);background:var(--soft)}
+.card.done{border-color:var(--ok);background:var(--ok-soft);opacity:.4}
+.card.dim{opacity:.18}
+.card.wrong{border-color:var(--bad);background:var(--bad-soft);animation:shake .35s}
+@keyframes shake{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.hintbtn{width:100%;border:none;border-radius:100px;padding:12px;font-weight:800;background:var(--soft);color:var(--primary);margin-bottom:14px}
+.hintbtn:disabled{opacity:.45}
+
+.overlay{position:fixed;inset:0;background:rgba(11,16,32,.55);display:flex;align-items:center;justify-content:center;padding:20px;z-index:20}
+.reward{background:var(--card);border-radius:28px;padding:28px 22px;max-width:400px;width:100%;text-align:center}
+.reward .em{font-size:3rem}
+.reward h2{margin:6px 0 10px;font-size:1.7rem;font-weight:800}
+.reward p{color:var(--text);line-height:1.5;font-weight:500;margin:0 0 14px}
+.reward .code{background:var(--soft);color:var(--primary);font-size:1.4rem;padding:10px 18px}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+@media (max-width:380px){.task{font-size:1.9rem}.card{font-size:1rem}h1{font-size:2rem}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<section id="home">
+  <div class="top"><span></span><span class="pts" id="pts0"></span></div>
+  <h1>Тренажер з логарифмів</h1>
+  <p class="lead" style="font-weight:700;margin-bottom:4px">Тренажер від бадді ZNOHUB</p>
+  <p class="lead">Набивай руку, збирай бали й забирай подарунок.</p>
+  <div class="goal">
+    <div class="row"><span style="font-weight:700">Твої бали</span><span class="num" id="gNum"></span></div>
+    <div class="track"><div id="gBar"></div></div>
+    <p id="gText"></p>
+    <p class="spent" id="gTime"></p>
+    <span class="code hidden" id="gCode"></span>
+  </div>
+  <button class="mode" data-go="sprint">
+    <div class="sample m">lg 0,01 = ?</div>
+    <h2>60 секунд</h2>
+    <p>Рахуй логарифми на швидкість і бий свій рекорд. Не виходить? Бери підказку, і залишиться три варіанти.</p>
+  </button>
+  <button class="mode" data-go="pairs">
+    <div class="sample m">log<sub>2</sub>(<i>x</i> − 3) ↔ <i>x</i> &gt; 3</div>
+    <h2>Знайди пару</h2>
+    <p>З’єднуй вираз із його значенням або з ОДЗ. Підказка залишить три можливі відповіді.</p>
+  </button>
+</section>
+
+<section id="sprint" class="hidden">
+  <div class="top"><button class="back" data-go="home">← Назад</button><span class="pts" id="pts1"></span></div>
+  <div id="sIntro" class="panel">
+    <p>У тебе 60 секунд. Пиши відповідь і тисни OK.</p>
+    <p>Якщо вираз не йде, тисни «Підказка», і залишиться три варіанти. Правильна відповідь тоді дасть 1 бал замість 2.</p>
+    <p id="sBest" style="color:var(--muted);margin:0"></p>
+    <button class="btn" id="sStart">Почати</button>
+  </div>
+  <div id="sGame" class="hidden">
+    <div class="clock" id="sClock">1:00</div>
+    <div class="timer"><div id="sTimer"></div></div>
+    <div class="task m" id="sTask"></div>
+    <div id="sInput">
+      <div class="answer empty" id="sAns">твоя відповідь</div>
+      <div class="pad" id="pad">
+        <button>7</button><button>8</button><button>9</button>
+        <button>4</button><button>5</button><button>6</button>
+        <button>1</button><button>2</button><button>3</button>
+        <button aria-label="мінус" data-k="−">+/−</button><button>0</button><button aria-label="стерти">⌫</button>
+      </div>
+      <div class="acts"><button class="btn ghost" id="sHint">Підказка</button><button class="btn" id="sOk">OK</button></div>
+    </div>
+    <div id="sChoice" class="hidden">
+      <div class="opts-note">Обери одну з трьох</div>
+      <div class="opts" id="sOpts"></div>
+    </div>
+  </div>
+  <div id="sEnd" class="panel hidden">
+    <div style="font-weight:700;color:var(--text)">Правильних відповідей</div>
+    <div class="big" id="sScore">0</div>
+    <div id="sRec" style="font-weight:700"></div>
+    <div id="sGot" style="font-weight:700;color:var(--ok);margin-top:4px"></div>
+    <div class="mist" id="sMist"></div>
+    <button class="btn" id="sAgain">Ще раз</button>
+  </div>
+</section>
+
+<section id="pairs" class="hidden">
+  <div class="top"><button class="back" data-go="home">← Назад</button><span class="pts" id="pts2"></span></div>
+  <div class="seg" role="group" aria-label="Що з’єднуємо">
+    <button data-kind="mix" aria-pressed="true">Усе разом</button>
+    <button data-kind="val" aria-pressed="false">Значення</button>
+    <button data-kind="odz" aria-pressed="false">ОДЗ</button>
+  </div>
+  <p class="note" id="pNote"></p>
+  <div id="pBoard">
+    <div class="clock" id="pClock">⏱ 0:00</div>
+    <button class="hintbtn" id="pHint">Підказка</button>
+    <div class="cols">
+      <div id="pLeft"><h3>Вираз</h3></div>
+      <div id="pRight"><h3>Відповідь</h3></div>
+    </div>
+  </div>
+  <div id="pWin" class="panel hidden" style="text-align:center">
+    <div style="font-weight:700;color:var(--text)">Усі пари знайдено за</div>
+    <div class="big" id="pTime">0 с</div>
+    <div id="pRes" style="font-weight:700"></div>
+    <div class="mist" id="pMist" style="text-align:left"></div>
+    <button class="btn" id="pAgain">Новий раунд</button>
+  </div>
+</section>
+</div>
+
+<div class="overlay hidden" id="reward" role="dialog" aria-modal="true" aria-labelledby="rT">
+  <div class="reward">
+    <div class="em">🎁</div>
+    <h2 id="rT">Є 50 балів!</h2>
+    <p>Зроби скриншот цього екрана й надішли його в особисті Саші або Ксенії. Ми підготували для тебе приємний подарунок 🤍</p>
+    <p id="rTime" style="font-weight:700;color:var(--ink)"></p>
+    <span class="code" id="rCode"></span>
+    <button class="btn" id="rClose">Супер, граю далі</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var GOAL = 50;
+  var $ = function(id){ return document.getElementById(id); };
+  function rnd(a,b){ return a + Math.floor(Math.random()*(b-a+1)); }
+  function pick(a){ return a[Math.floor(Math.random()*a.length)]; }
+  function shuffle(a){ for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;} return a; }
+  function get(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
+  function set(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
+  function minus(n){ return n<0 ? "−"+(-n) : String(n); }
+  function lg(b){ return b===10 ? "lg " : "log<sub>"+b+"</sub> "; }
+  function frac(a,b){ return '<span class="fr"><span>'+a+'</span><span>'+b+'</span></span>'; }
+
+  /* ---------- points ---------- */
+  var points = parseInt(get("logPoints")||"0",10)||0;
+  var spent = parseInt(get("logTime")||"0",10)||0;
+  function fmt(s){ var m=Math.floor(s/60), r=s%60; return m+":"+(r<10?"0":"")+r; }
+  function spentText(){ var m=Math.floor(spent/60); if(spent<60) return spent+" с"; if(m<60) return m+" хв "+(spent%60)+" с"; return Math.floor(m/60)+" год "+(m%60)+" хв"; }
+  function spentShort(){ return spent>=3600 ? Math.floor(spent/3600)+":"+fmt(spent%3600).padStart(5,"0") : fmt(spent); }
+  function renderTime(){
+    document.querySelectorAll(".tm").forEach(function(e){ e.textContent="· ⏱ "+spentShort(); });
+    $("gTime").textContent = "Час у тренажері "+spentText();
+  }
+  setInterval(function(){
+    if(document.hidden) return;
+    spent++; set("logTime",String(spent)); renderTime();
+  },1000);
+  function code(){
+    var c = get("logCode");
+    if(!c){ var ch="ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; c="LOG-"; for(var i=0;i<4;i++) c+=ch[rnd(0,ch.length-1)]; set("logCode",c); }
+    return c;
+  }
+  function renderPts(){
+    var html = '<span class="s">★</span>'+points+' <small>/ '+GOAL+'</small> <small class="tm">· ⏱ '+spentShort()+'</small>';
+    ["pts0","pts1","pts2"].forEach(function(id){ var f=$(id).querySelector(".float"); $(id).innerHTML=html; if(f) $(id).appendChild(f); });
+    $("gNum").innerHTML = points+' <small>/ '+GOAL+'</small>';
+    $("gBar").style.width = Math.min(100, points/GOAL*100)+"%";
+    if(points>=GOAL){
+      $("gText").textContent = "Мету досягнуто! Зроби скриншот і надішли в особисті Саші або Ксенії, щоб забрати подарунок 🤍";
+      $("gCode").textContent = code(); $("gCode").classList.remove("hidden");
+    } else {
+      $("gText").textContent = "Назбирай "+GOAL+" балів і надішли скриншот в особисті Саші або Ксенії. Тебе чекає приємний подарунок 🤍 Залишилось "+(GOAL-points)+".";
+      $("gCode").classList.add("hidden");
+    }
+    $("gTime").textContent = "Час у тренажері "+spentText();
+  }
+  function add(n){
+    if(n<=0) return;
+    points += n; set("logPoints", String(points)); renderPts();
+    ["pts1","pts2"].forEach(function(id){
+      var el=$(id); if(el.offsetParent===null) return;
+      var f=document.createElement("span"); f.className="float"; f.textContent="+"+n; el.appendChild(f);
+      setTimeout(function(){ f.remove(); },800);
+    });
+  }
+  function checkReward(){
+    if(points>=GOAL && get("logRewardShown")!=="1"){
+      set("logRewardShown","1");
+      $("rCode").textContent = code();
+      $("rTime").textContent = "Час у тренажері "+spentText();
+      $("reward").classList.remove("hidden");
+    }
+  }
+  $("rClose").addEventListener("click", function(){ $("reward").classList.add("hidden"); });
+
+  /* ---------- generators ---------- */
+  var RANGE = {2:[-3,6],3:[-3,4],4:[-2,3],5:[-2,3],10:[-3,4]};
+  function basic(){
+    var b = pick([2,3,4,5,10]), k = rnd(RANGE[b][0], RANGE[b][1]), arg;
+    if(k>=0) arg = String(Math.pow(b,k));
+    else if(b===10) arg = "0," + "0".repeat(-k-1) + "1";
+    else arg = frac(1, Math.pow(b,-k));
+    return {html: lg(b)+arg, ans:k, ex:"Бо "+b+"<sup>"+minus(k)+"</sup> = "+arg};
+  }
+  var SUMS = [[6,2,3,1],[6,4,9,2],[10,4,25,2],[10,2,5,1],[10,20,5,2],[10,50,2,2],[12,3,4,1],[15,3,5,1],[2,4,8,5],[3,3,27,4],[2,2,16,5],[10,200,5,3]];
+  function prop(){
+    var t = rnd(0,3);
+    if(t===0){ var s = pick(SUMS); return {html: lg(s[0])+s[1]+" + "+lg(s[0])+s[2], ans:s[3], ex:"Сума логарифмів дорівнює логарифму добутку, тобто "+lg(s[0])+(s[1]*s[2])+" = "+s[3]}; }
+    if(t===1){
+      var b = pick([2,3,5]), m = pick([3,5,7].filter(function(x){return x!==b;})), k = rnd(1,3);
+      if(Math.pow(b,k)*m>250) k=1;
+      return {html: lg(b)+(Math.pow(b,k)*m)+" − "+lg(b)+m, ans:k, ex:"Різниця логарифмів дорівнює логарифму частки, тобто "+lg(b)+Math.pow(b,k)+" = "+k};
+    }
+    if(t===2){ var b2 = pick([2,3,5,7]), n = rnd(2,12); return {html: b2+"<sup>log<sub>"+b2+"</sub> "+n+"</sup>", ans:n, ex:"Основна логарифмічна тотожність, a<sup>log<sub>a</sub> b</sup> = b"}; }
+    var b3 = pick([2,3,10]), j = rnd(1,3), c = rnd(2,3);
+    return {html: c+" · "+lg(b3)+Math.pow(b3,j), ans:c*j, ex:lg(b3)+Math.pow(b3,j)+" = "+j+", тому "+c+" · "+j+" = "+(c*j)};
+  }
+  function task(){ return Math.random()<0.7 ? basic() : prop(); }
+  function distractors(a){
+    var c = shuffle([a+1,a-1,-a,a+2,a-2,a*2].filter(function(x,i,arr){ return x!==a && arr.indexOf(x)===i; }));
+    return c.slice(0,2);
+  }
+
+  var ODZ = [
+    ["log<sub>2</sub>(<i>x</i> − 3)","x > 3"],["log<sub>4</sub>(2<i>x</i> − 6)","x > 3"],
+    ["log<sub>3</sub>(5 − <i>x</i>)","x < 5"],["lg(<i>x</i> + 2)","x > −2"],["log<sub>7</sub>(<i>x</i> + 5)","x > −5"],
+    ["lg(−<i>x</i>)","x < 0"],["log<sub>5</sub> <i>x</i><sup>2</sup>","x ≠ 0"],["log<sub>2</sub> |<i>x</i>|","x ≠ 0"],
+    ["log<sub><i>x</i></sub> 7","x > 0, x ≠ 1"],["log<sub><i>x</i>−1</sub> 5","x > 1, x ≠ 2"],
+    ["log<sub>2</sub>(<i>x</i><sup>2</sup> − 4)","x < −2 або x > 2"],["log<sub>2</sub>(9 − <i>x</i><sup>2</sup>)","−3 < x < 3"],
+    ["log<sub>3</sub>(<i>x</i>(<i>x</i> − 4))","x < 0 або x > 4"],["log<sub>2</sub> <i>x</i> + log<sub>2</sub>(<i>x</i> − 1)","x > 1"],
+    ["log<sub>3</sub>(<i>x</i> − 1) − log<sub>3</sub>(4 − <i>x</i>)","1 < x < 4"],["lg(<i>x</i><sup>2</sup> + 1)","будь-яке x"],
+    ["log<sub>6</sub>(<i>x</i> + 1) + lg(3 − <i>x</i>)","−1 < x < 3"]
+  ];
+  function odzHtml(s){ return s.replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/x/g,"<i>x</i>"); }
+  function odzEx(p){
+    var rule = p[1]==="будь-яке x" ? "Вираз під логарифмом додатний при будь-якому x."
+      : p[0].indexOf("<sub><i>x")>=0 ? "Основа має бути додатною і не дорівнювати 1."
+      : "Вираз під кожним логарифмом має бути більшим за 0.";
+    return p[0]+", ОДЗ "+odzHtml(p[1])+". "+rule;
+  }
+
+  /* ---------- navigation ---------- */
+  function show(id){
+    ["home","sprint","pairs"].forEach(function(s){ $(s).classList.toggle("hidden", s!==id); });
+    stopSprint();
+    if(pTick){ clearInterval(pTick); pTick=null; }
+    if(id==="sprint") sIntro();
+    if(id==="pairs") newRound();
+    renderPts();
+    window.scrollTo(0,0);
+  }
+  document.querySelectorAll("[data-go]").forEach(function(b){ b.addEventListener("click", function(){ show(b.dataset.go); }); });
+
+  /* ---------- 60 seconds ---------- */
+  var cur, input="", score=0, earned=0, wrongs=[], tick=null, endAt=0, last="", locked=false, hinted=false;
+  function best(){ return parseInt(get("logBest")||"0",10)||0; }
+  function sIntro(){
+    $("sIntro").classList.remove("hidden"); $("sGame").classList.add("hidden"); $("sEnd").classList.add("hidden");
+    $("sBest").textContent = best() ? "Твій рекорд "+best() : "";
+  }
+  function mode(choice){ $("sInput").classList.toggle("hidden", choice); $("sChoice").classList.toggle("hidden", !choice); }
+  function next(){
+    do { cur = task(); } while(cur.html===last);
+    last = cur.html; hinted=false; mode(false);
+    $("sTask").innerHTML = cur.html + " = ?";
+    $("sTask").className="task m";
+    input=""; draw();
+  }
+  function draw(){
+    var a=$("sAns");
+    if(input===""){ a.textContent="твоя відповідь"; a.classList.add("empty"); }
+    else { a.textContent=input; a.classList.remove("empty"); }
+  }
+  function press(k){
+    if(locked || hinted) return;
+    if(k==="⌫") input=input.slice(0,-1);
+    else if(k==="−"||k==="-") input = input.charAt(0)==="−" ? input.slice(1) : "−"+input;
+    else if(/^[0-9]$/.test(k) && input.replace("−","").length<4) input+=k;
+    draw();
+  }
+  function check(v){
+    if(locked) return;
+    locked=true;
+    var ok = v===cur.ans;
+    if(ok){ score++; var p = hinted?1:2; earned+=p; add(p); $("sTask").classList.add("ok"); }
+    else { wrongs.push({html:cur.html, ans:cur.ans, got:v, ex:cur.ex}); $("sTask").innerHTML = cur.html+" = "+minus(cur.ans); $("sTask").classList.add("bad"); }
+    setTimeout(function(){ locked=false; if(tick) next(); }, ok?300:1100);
+  }
+  function submit(){ if(hinted || input==="" || input==="−") return; check(parseInt(input.replace("−","-"),10)); }
+  function hint(){
+    if(locked || hinted) return;
+    hinted=true;
+    var opts = shuffle([cur.ans].concat(distractors(cur.ans))), box=$("sOpts");
+    box.innerHTML="";
+    opts.forEach(function(o){
+      var b=document.createElement("button"); b.className="m"; b.textContent=minus(o);
+      b.addEventListener("click", function(){ check(o); });
+      box.appendChild(b);
+    });
+    mode(true);
+  }
+  function startSprint(){
+    score=0; earned=0; wrongs=[]; last="";
+    $("sIntro").classList.add("hidden"); $("sEnd").classList.add("hidden"); $("sGame").classList.remove("hidden");
+    endAt = Date.now()+60000; $("sTimer").style.width="100%"; $("sClock").textContent="1:00";
+    next();
+    tick = setInterval(function(){
+      var left = Math.max(0,endAt-Date.now());
+      $("sTimer").style.width = (left/600)+"%";
+      $("sClock").textContent = fmt(Math.ceil(left/1000));
+      if(left<=0) finish();
+    },200);
+  }
+  function stopSprint(){ if(tick){ clearInterval(tick); tick=null; } locked=false; }
+  function finish(){
+    stopSprint();
+    $("sGame").classList.add("hidden"); $("sEnd").classList.remove("hidden");
+    $("sScore").textContent=score;
+    var b=best();
+    if(score>b){ set("logBest",String(score)); $("sRec").textContent = b ? "Новий рекорд! Попередній був "+b : "Перший рекорд записано"; }
+    else $("sRec").textContent = "Рекорд "+b;
+    $("sGot").textContent = earned ? "+"+earned+" до твоїх балів" : "";
+    var m=$("sMist"); m.innerHTML="";
+    if(!wrongs.length){ m.innerHTML='<div style="justify-content:center;color:var(--ok);font-weight:700">Жодної помилки 🤍</div>'; }
+    else {
+      var h=document.createElement("div"); h.style.cssText="color:var(--muted);font-weight:700"; h.textContent="Варто глянути ще раз"; m.appendChild(h);
+      wrongs.forEach(function(w){
+        var d=document.createElement("div");
+        d.innerHTML='<span class="m">'+w.html+'</span><span><span class="w">'+minus(w.got)+'</span><span class="r">'+minus(w.ans)+'</span></span>';
+        m.appendChild(d);
+        if(w.ex){ var e=document.createElement("div"); e.className="ex"; e.innerHTML=w.ex; m.appendChild(e); }
+      });
+    }
+    checkReward();
+  }
+  $("sStart").addEventListener("click", startSprint);
+  $("sAgain").addEventListener("click", startSprint);
+  $("sOk").addEventListener("click", submit);
+  $("sHint").addEventListener("click", hint);
+  $("pad").querySelectorAll("button").forEach(function(b){ b.addEventListener("click", function(){ press(b.dataset.k || b.textContent.trim()); }); });
+  document.addEventListener("keydown", function(e){
+    if($("sGame").classList.contains("hidden") || hinted) return;
+    if(e.key==="Enter"){ e.preventDefault(); submit(); }
+    else if(e.key==="Backspace"){ e.preventDefault(); press("⌫"); }
+    else if(e.key==="-"||/^[0-9]$/.test(e.key)) press(e.key);
+  });
+
+  /* ---------- pairs ---------- */
+  var kind="mix", selL=null, selR=null, matched=0, total=0, misses=0, hints=0, t0=0, pTick=null, hintKey=null, exMap={}, pMistList=[];
+  var NOTES = {
+    mix:"Частина пар про значення, частина про ОДЗ. Обери вираз, а потім відповідь до нього.",
+    val:"З’єднай кожен логарифм з його значенням.",
+    odz:"ОДЗ означає область допустимих значень. Під логарифмом має бути додатне число, а основа додатна і не дорівнює 1."
+  };
+  document.querySelectorAll(".seg button").forEach(function(b){
+    b.addEventListener("click", function(){
+      kind=b.dataset.kind;
+      document.querySelectorAll(".seg button").forEach(function(x){ x.setAttribute("aria-pressed", String(x===b)); });
+      newRound();
+    });
+  });
+  function buildPairs(){
+    var nOdz = kind==="mix"?3 : kind==="odz"?6 : 0, out=[], used={};
+    shuffle(ODZ.slice()).forEach(function(p){
+      if(out.length<nOdz && !used[p[1]]){ used[p[1]]=1; out.push({l:p[0], r:odzHtml(p[1]), key:p[1], ex:odzEx(p)}); }
+    });
+    var guard=0;
+    while(out.length<6 && guard++<500){
+      var t = Math.random()<0.75 ? basic() : prop(), key="v"+t.ans;
+      if(!used[key]){ used[key]=1; out.push({l:t.html, r:minus(t.ans), key:key, ex:t.html+" = "+minus(t.ans)+". "+t.ex}); }
+    }
+    return out;
+  }
+  function newRound(){
+    selL=selR=null; matched=0; misses=0; hints=0; hintKey=null;
+    var pairs = buildPairs(); total=pairs.length;
+    exMap={}; pMistList=[]; pairs.forEach(function(p){ exMap[p.key]=p.ex; }); $("pMist").innerHTML="";
+    $("pNote").textContent = NOTES[kind];
+    $("pWin").classList.add("hidden"); $("pBoard").classList.remove("hidden");
+    var L=$("pLeft"), R=$("pRight");
+    L.querySelectorAll(".card").forEach(function(c){c.remove();});
+    R.querySelectorAll(".card").forEach(function(c){c.remove();});
+    shuffle(pairs.slice()).forEach(function(p){ L.appendChild(card(p.l,p.key,"L")); });
+    shuffle(pairs.slice()).forEach(function(p){ R.appendChild(card(p.r,p.key,"R")); });
+    t0=Date.now();
+    if(pTick) clearInterval(pTick);
+    pTick=setInterval(pairsTick,500); pairsTick();
+  }
+  function card(html,key,side){
+    var b=document.createElement("button");
+    b.className="card m"; b.innerHTML=html; b.dataset.key=key; b.dataset.side=side;
+    b.addEventListener("click", function(){ choose(b); });
+    return b;
+  }
+  function pairsTick(){ hintState(); $("pClock").textContent = "⏱ "+fmt(Math.floor((Date.now()-t0)/1000)); }
+  function hintState(){
+    $("pHint").disabled = !!hintKey || matched===total;
+    $("pHint").textContent = hintKey ? "Підказка активна, обери з трьох" : "Підказка";
+  }
+  function clearDim(){ document.querySelectorAll("#pRight .card.dim").forEach(function(c){ c.classList.remove("dim"); c.disabled=false; }); hintKey=null; hintState(); }
+  function pHint(){
+    if(hintKey) return;
+    if(!selL){
+      var first = $("pLeft").querySelector(".card:not(.done)"); if(!first) return;
+      selL=first; first.classList.add("sel");
+    }
+    if(selR){ selR.classList.remove("sel"); selR=null; }
+    hintKey = selL.dataset.key; hints++;
+    var right = Array.prototype.slice.call($("pRight").querySelectorAll(".card:not(.done)"));
+    var keep = shuffle(right.filter(function(c){ return c.dataset.key!==hintKey; })).slice(0,2);
+    right.forEach(function(c){ if(c.dataset.key!==hintKey && keep.indexOf(c)<0){ c.classList.add("dim"); c.disabled=true; } });
+    hintState();
+  }
+  $("pHint").addEventListener("click", pHint);
+  function choose(b){
+    if(b.classList.contains("done") || b.classList.contains("dim")) return;
+    if(b.dataset.side==="L"){
+      if(hintKey && b!==selL) clearDim();
+      if(selL) selL.classList.remove("sel"); selL = selL===b && !hintKey ? null : b;
+    } else { if(selR) selR.classList.remove("sel"); selR = selR===b?null:b; }
+    if(selL) selL.classList.add("sel");
+    if(selR) selR.classList.add("sel");
+    if(selL && selR){
+      var a=selL, c=selR, usedHint = hintKey===a.dataset.key; selL=selR=null;
+      a.classList.remove("sel"); c.classList.remove("sel");
+      if(a.dataset.key===c.dataset.key){
+        a.classList.add("done"); c.classList.add("done"); a.disabled=c.disabled=true; matched++;
+        add(usedHint?1:2);
+        clearDim();
+        if(matched===total) win();
+      } else {
+        misses++; if(pMistList.indexOf(a.dataset.key)<0) pMistList.push(a.dataset.key);
+        [a,c].forEach(function(x){ x.classList.remove("wrong"); void x.offsetWidth; x.classList.add("wrong"); setTimeout(function(){x.classList.remove("wrong");},450); });
+        if(usedHint){ selL=a; a.classList.add("sel"); c.classList.add("dim"); c.disabled=true; }
+      }
+    }
+  }
+  function win(){
+    clearInterval(pTick); pTick=null;
+    var s=Math.round((Date.now()-t0)/1000), bonus = misses===0 && hints===0;
+    $("pTime").textContent = fmt(s);
+    if(bonus){ add(3); $("pRes").textContent = "Без помилок і підказок, тримай бонус +3 🤍"; }
+    else $("pRes").textContent = "Помилок "+misses+", підказок "+hints;
+    var pm=$("pMist"); pm.innerHTML="";
+    if(pMistList.length){
+      var h=document.createElement("div"); h.style.cssText="color:var(--muted);font-weight:700"; h.textContent="Варто глянути ще раз"; pm.appendChild(h);
+      pMistList.forEach(function(k){ var d=document.createElement("div"); d.className="ex"; d.innerHTML=exMap[k]; pm.appendChild(d); });
+    }
+    setTimeout(function(){ $("pBoard").classList.add("hidden"); $("pWin").classList.remove("hidden"); checkReward(); }, 450);
+  }
+  $("pAgain").addEventListener("click", newRound);
+
+  renderPts();
+  if(points>=GOAL && get("logRewardShown")!=="1") checkReward();
+})();
+</script>
+</body>
+</html>
